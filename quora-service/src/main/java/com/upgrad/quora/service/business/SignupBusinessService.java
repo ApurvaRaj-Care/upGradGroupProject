@@ -16,6 +16,16 @@ public class SignupBusinessService {
     @Autowired
     private PasswordCryptographyProvider passwordCryptographyProvider;
 
+    public UserEntity getUserByUserName(final String username) {
+        UserEntity userEntity =  userDao.getUserByUserName(username);
+        return userEntity;
+    }
+
+    public UserEntity getUserByEmail(final String email){
+        UserEntity userEntity =  userDao.getUserByEmail(email);
+        return userEntity;
+    }
+
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity signup(UserEntity userEntity) {
         String[] encryptedText = passwordCryptographyProvider.encrypt(userEntity.getPassword());

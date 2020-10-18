@@ -14,16 +14,21 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "question", schema = "public")
+
+@NamedQueries(
+        {
+                @NamedQuery(name = "allQuestions", query = "select q from QuestionEntity q"),
+                @NamedQuery(name = "questionbyuserid", query = "select q from QuestionEntity q where q.user.uuid =:uuid")
+        }
+)
 public class QuestionEntity implements Serializable {
 
     @Id
     @Column(name = "ID")
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "UUID")
-    @NotNull
     @Size(max = 200)
     private String uuid;
 
@@ -32,7 +37,6 @@ public class QuestionEntity implements Serializable {
     private UserEntity user;
 
     @Column(name = "DATE")
-    @NotNull
     private ZonedDateTime date;
 
     @Column(name = "CONTENT")
@@ -40,9 +44,9 @@ public class QuestionEntity implements Serializable {
     @Size(max = 500)
     private String content;
 
-    @Version
+    /*@Version
     @Column(name="VERSION" , length=19 , nullable = false)
-    private Long version;
+    private Long version;*/
 
     public Integer getId() {
         return id;
@@ -76,13 +80,13 @@ public class QuestionEntity implements Serializable {
         this.content = content;
     }
 
-    public Long getVersion() {
+    /*public Long getVersion() {
         return version;
     }
 
     public void setVersion(Long version) {
         this.version = version;
-    }
+    }*/
 
     public UserEntity getUser() {
         return user;

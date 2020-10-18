@@ -27,6 +27,22 @@ public class UserDao {
         }
     }
 
+    public UserEntity getUserByUUID(final String uuid) {
+        try {
+            return entityManager.createNamedQuery("userByUUID", UserEntity.class).setParameter("uuid", uuid).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
+    public UserEntity deleteUserByUUID(final String uuid) {
+        try {
+            return entityManager.createNamedQuery("deleteUserByUUID", UserEntity.class).setParameter("uuid", uuid).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
     public UserEntity getUserByUserName(final String username) {
         try {
             return entityManager.createNamedQuery("userByUserName", UserEntity.class).setParameter("username", username).getSingleResult();

@@ -26,7 +26,6 @@ public class AuthenticationService {
         if (userEntity == null) {
             throw new AuthenticationFailedException("ATH-001", "This username does not exist");
         }
-
         final String encryptedPassword = cryptographyProvider.encrypt(password, userEntity.getSalt());
         if (encryptedPassword.equals(userEntity.getPassword())) {
             JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(encryptedPassword);
@@ -37,38 +36,10 @@ public class AuthenticationService {
             userAuthToken.setAccessToken(jwtTokenProvider.generateToken(userEntity.getUuid(), now, expiresAt));
             userAuthToken.setLoginAt(now);
             userAuthToken.setExpiresAt(expiresAt);
-
+            //reset logout time
+            userAuthToken.setLogoutAt(null);
             userDao.createAuthToken(userAuthToken);
-            userDao.updateUser(userEntity);
-
-
-            return userAuthToken;
-        } else {
-            throw new AuthenticationFailedException("ATH-002", "Password Failed");
-        }
-
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED)
-    public UserAuthTokenEntity checkAuthenticate(final String username, final String password) throws AuthenticationFailedException {
-        UserEntity userEntity = userDao.getUserByEmail(username);
-        if (userEntity == null) {
-            throw new AuthenticationFailedException("ATH-001", "This username does not exist");
-        }
-        final String encryptedPassword = cryptographyProvider.encrypt(password, userEntity.getSalt());
-        if (encryptedPassword.equals(userEntity.getPassword())) {
-            JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(encryptedPassword);
-            UserAuthTokenEntity userAuthToken = new UserAuthTokenEntity();
-            userAuthToken.setUser(userEntity);
-            final ZonedDateTime now = ZonedDateTime.now();
-            final ZonedDateTime expiresAt = now.plusHours(8);
-            userAuthToken.setAccessToken(jwtTokenProvider.generateToken(userEntity.getUuid(), now, expiresAt));
-            userAuthToken.setLoginAt(now);
-            userAuthToken.setExpiresAt(expiresAt);
-
-            userDao.createAuthToken(userAuthToken);
-            userDao.updateUser(userEntity);
-
+            //userDao.updateUser(userEntity);
             return userAuthToken;
         } else {
             throw new AuthenticationFailedException("ATH-002", "Password Failed");

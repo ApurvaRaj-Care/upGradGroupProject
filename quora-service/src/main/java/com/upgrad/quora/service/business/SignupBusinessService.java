@@ -33,4 +33,9 @@ public class SignupBusinessService {
         userEntity.setPassword(encryptedText[1]);
         return userDao.createUser(userEntity);
     }
+
+    public UserEntity getUserByUUID(String userUuid) {
+        UserEntity userEntity =  userDao.getUserByUUID(userUuid);
+        return userEntity;
+    }
 }

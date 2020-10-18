@@ -84,7 +84,6 @@ public class UserController {
         if(uAuth==null){
             throw new SignOutRestrictedException("SGR-001","User is not Signed in");
         }
-
         uAuth.setLogoutAt(now());
         signoutBusinessService.updateAuthTokenEntityByToken(uAuth);
         SignoutResponse signoutResponse = new SignoutResponse().id(uAuth.getUser().getUuid()).message("SIGNED OUT SUCCESSFULLY");

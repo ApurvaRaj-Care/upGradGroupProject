@@ -19,7 +19,17 @@ public class AuthenticationService {
     @Autowired
     private PasswordCryptographyProvider cryptographyProvider;
 
-
+    /**
+     * authenticate user with username and password
+     * @param username
+     * @param password
+     * @return UserAuthTokenEntity
+     * @throws AuthenticationFailedException
+     * if user does not exist
+     *      "ATH-001", "This username does not exist"
+     * if password does not match
+     *      "ATH-002", "Password Failed"
+     */
     @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthTokenEntity authenticate(final String username, final String password) throws AuthenticationFailedException {
         UserEntity userEntity = userDao.getUserByEmail(username);
@@ -38,12 +48,10 @@ public class AuthenticationService {
             userAuthToken.setExpiresAt(expiresAt);
             //reset logout time
             userAuthToken.setLogoutAt(null);
-            userDao.createAuthToken(userAuthToken);
-            //userDao.updateUser(userEntity);
+            userDao.createUserAuthTokenEntity(userAuthToken);
             return userAuthToken;
         } else {
             throw new AuthenticationFailedException("ATH-002", "Password Failed");
         }
-
     }
 }
